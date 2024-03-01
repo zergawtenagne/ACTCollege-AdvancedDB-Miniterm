@@ -1,0 +1,20 @@
+
+Name Tenagne Zergaw ACT COLLEGE of Computer SCeince Masters Program ID 064
+
+Question: Assuming a list of relations is given as a list, write a Python and PL SQL class that generates
+ HORIZONTAL miniterm fragments from a list of predicates Pr
+
+
+
+DECLARE
+    miniterms miniterm_list;
+BEGIN
+    -- Call the procedure with a list of predicates
+    generate_miniterms('A = 1 AND B = 2 AND C = 3, X = ''foo'' AND Y = ''bar''', miniterms);
+    
+    -- Display the generated miniterms
+    FOR i IN 1..miniterms.COUNT LOOP
+        DBMS_OUTPUT.PUT_LINE(miniterms(i).miniterm);
+    END LOOP;
+END;
+/

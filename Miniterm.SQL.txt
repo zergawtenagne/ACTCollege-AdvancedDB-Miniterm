@@ -1,0 +1,46 @@
+
+
+Name Tenagne Zergaw ACT COLLEGE of Computer SCeince Masters Program ID 064
+
+Question: Assuming a list of relations is given as a list, write a Python and PL SQL class that generates
+ HORIZONTAL miniterm fragments from a list of predicates Pr
+
+
+
+
+-- Type definition for individual miniterm
+CREATE OR REPLACE TYPE miniterm_type AS OBJECT (
+    miniterm VARCHAR2(100)
+);
+
+-- Type definition for a list of miniterms
+CREATE OR REPLACE TYPE miniterm_list AS TABLE OF miniterm_type;
+
+-- Procedure to generate miniterms from predicates
+CREATE OR REPLACE PROCEDURE generate_miniterms(predicates IN VARCHAR2, miniterms OUT miniterm_list) IS
+    predicate_list VARCHAR2(32767);
+    predicate_array DBMS_UTILITY.LNAME_ARRAY;
+BEGIN
+    -- Split the predicates by comma and store them in an array
+    predicate_list := predicates;
+    DBMS_UTILITY.COMMA_TO_TABLE (list => predicate_list, tablen => predicate_array);
+    
+    -- Initialize the output miniterms collection
+    miniterms := miniterm_list();
+    
+    -- Iterate through each predicate and generate miniterms
+    FOR i IN 1..predicate_array.COUNT LOOP
+        -- Add the full predicate as a miniterm
+        miniterms.EXTEND;
+        miniterms(miniterms.LAST) := miniterm_type(NULL);
+        miniterms(miniterms.LAST).miniterm := predicate_array(i);
+        
+        -- Generate partial miniterms by excluding one condition at a time
+        FOR j IN 1..(i-1) LOOP
+            miniterms.EXTEND;
+            miniterms(miniterms.LAST) := miniterm_type(NULL);
+            miniterms(miniterms.LAST).miniterm := predicate_array(i - j);
+        END LOOP;
+    END LOOP;
+END generate_miniterms;
+/
